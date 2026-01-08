@@ -1,0 +1,22 @@
+[Unit]
+Description=PiVitals Health Monitoring Service
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/PiVitals/backend
+Environment="PATH=/home/pi/PiVitals/backend/venv/bin"
+ExecStart=/home/pi/PiVitals/backend/venv/bin/gunicorn \
+    --bind 0.0.0.0:5001 \
+    --workers 2 \
+    --threads 2 \
+    --timeout 60 \
+    --access-logfile /var/log/pivitals/access.log \
+    --error-logfile /var/log/pivitals/error.log \
+    app:app
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
