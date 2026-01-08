@@ -4,10 +4,10 @@ After=network.target
 
 [Service]
 Type=simple
-User=pi
-WorkingDirectory=/home/pi/PiVitals/backend
-Environment="PATH=/home/pi/PiVitals/backend/venv/bin"
-ExecStart=/home/pi/PiVitals/backend/venv/bin/gunicorn \
+User=overapt
+WorkingDirectory=/home/overapt/PiVitals/backend
+Environment="PATH=/home/overapt/PiVitals/backend/venv/bin"
+ExecStart=/home/overapt/PiVitals/backend/venv/bin/gunicorn \
     --bind 0.0.0.0:5001 \
     --workers 2 \
     --threads 2 \
