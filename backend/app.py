@@ -2,17 +2,26 @@
 PiVitals - Raspberry Pi Health Monitoring Application
 Main Flask application entry point
 """
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from config import get_config
 from routes import metrics_bp
 import time
 import psutil
+import os
 
 
 def create_app():
     """Application factory"""
-    app = Flask(__name__)
+    # Get the path to the frontend build directory
+    frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend', 'dist'))
+
+    # Create Flask app with static folder configuration
+    if os.path.exists(frontend_dist):
+        app = Flask(__name__, static_folder=frontend_dist, static_url_path='')
+    else:
+        app = Flask(__name__)
+        print(f"Warning: Frontend dist folder not found at {frontend_dist}")
 
     # Load configuration
     config_obj = get_config()
@@ -39,28 +48,52 @@ def create_app():
             'uptime_formatted': format_uptime(uptime)
         }), 200
 
-    # Root endpoint
+    # Serve frontend - Root endpoint now serves the React app
     @app.route('/', methods=['GET'])
-    def root():
-        """Root endpoint"""
-        return jsonify({
-            'name': 'PiVitals API',
-            'version': app.config['APP_VERSION'],
-            'endpoints': {
-                'health': '/api/v1/health',
-                'metrics': {
-                    'cpu': '/api/v1/metrics/cpu',
-                    'memory': '/api/v1/metrics/memory',
-                    'disk': '/api/v1/metrics/disk',
-                    'network': '/api/v1/metrics/network',
-                    'all': '/api/v1/metrics/all'
+    def index():
+        """Serve the React frontend"""
+        if os.path.exists(frontend_dist):
+            return send_from_directory(frontend_dist, 'index.html')
+        else:
+            # Fallback to API info if frontend not built
+            return jsonify({
+                'name': 'PiVitals API',
+                'version': app.config['APP_VERSION'],
+                'message': 'Frontend not built. Run "cd frontend && npm run build"',
+                'endpoints': {
+                    'health': '/api/v1/health',
+                    'metrics': {
+                        'cpu': '/api/v1/metrics/cpu',
+                        'memory': '/api/v1/metrics/memory',
+                        'disk': '/api/v1/metrics/disk',
+                        'network': '/api/v1/metrics/network',
+                        'all': '/api/v1/metrics/all'
+                    }
                 }
-            }
-        }), 200
+            }), 200
+
+    # Serve frontend static assets
+    @app.route('/<path:path>')
+    def serve_static(path):
+        """Serve static files from frontend build"""
+        if os.path.exists(frontend_dist):
+            # Check if file exists
+            if os.path.exists(os.path.join(frontend_dist, path)):
+                return send_from_directory(frontend_dist, path)
+            else:
+                # If file doesn't exist, serve index.html (for client-side routing)
+                return send_from_directory(frontend_dist, 'index.html')
+        return jsonify({'error': 'Frontend not built'}), 404
 
     # Error handlers
     @app.errorhandler(404)
     def not_found(error):
+        # For API routes, return JSON error
+        if '/api/' in str(error):
+            return jsonify({'error': 'Not found'}), 404
+        # For other routes, try to serve the frontend
+        if os.path.exists(frontend_dist):
+            return send_from_directory(frontend_dist, 'index.html')
         return jsonify({'error': 'Not found'}), 404
 
     @app.errorhandler(500)
