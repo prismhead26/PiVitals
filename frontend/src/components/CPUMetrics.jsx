@@ -91,20 +91,29 @@ const CPUMetrics = ({ data, history }) => {
 
       {chartData.length > 1 && (
         <div className="chart-container">
-          <div className="metric-row-label" style={{ marginBottom: '10px' }}>Usage History</div>
+          <div className="metric-row-label" style={{ marginBottom: '10px', color: '#a0a0b0' }}>Usage History</div>
           <ResponsiveContainer width="100%" height={150}>
             <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3e" />
               <XAxis dataKey="name" hide />
-              <YAxis domain={[0, 100]} />
+              <YAxis
+                domain={[0, 100]}
+                tick={{ fill: '#a0a0b0', fontSize: 12 }}
+              />
               <Tooltip
                 formatter={(value) => `${value}%`}
                 labelFormatter={() => 'CPU Usage'}
+                contentStyle={{
+                  backgroundColor: '#1e1e2f',
+                  border: '1px solid #2a2a3e',
+                  borderRadius: '8px',
+                  color: '#e0e0e0'
+                }}
               />
               <Line
                 type="monotone"
                 dataKey="usage"
-                stroke="#667eea"
+                stroke="#8b9bff"
                 strokeWidth={2}
                 dot={false}
               />

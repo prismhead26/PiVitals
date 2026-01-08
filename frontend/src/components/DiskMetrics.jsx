@@ -112,13 +112,24 @@ const DiskMetrics = ({ data, history }) => {
             <div className="chart-container" style={{ marginTop: '15px' }}>
               <ResponsiveContainer width="100%" height={150}>
                 <BarChart data={ioChartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip formatter={(value) => value.toLocaleString()} />
-                  <Legend />
-                  <Bar dataKey="Read" fill="#667eea" />
-                  <Bar dataKey="Write" fill="#764ba2" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3e" />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fill: '#a0a0b0', fontSize: 12 }}
+                  />
+                  <YAxis tick={{ fill: '#a0a0b0', fontSize: 12 }} />
+                  <Tooltip
+                    formatter={(value) => value.toLocaleString()}
+                    contentStyle={{
+                      backgroundColor: '#1e1e2f',
+                      border: '1px solid #2a2a3e',
+                      borderRadius: '8px',
+                      color: '#e0e0e0'
+                    }}
+                  />
+                  <Legend wrapperStyle={{ color: '#a0a0b0' }} />
+                  <Bar dataKey="Read" fill="#8b9bff" />
+                  <Bar dataKey="Write" fill="#ff6b9d" />
                 </BarChart>
               </ResponsiveContainer>
             </div>

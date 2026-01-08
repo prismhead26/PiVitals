@@ -108,7 +108,7 @@ const NetworkMetrics = ({ data, history }) => {
           )}
 
           {data.connections.error && (
-            <div style={{ fontSize: '0.85rem', color: '#856404', marginTop: '10px', padding: '10px', background: '#fff3cd', borderRadius: '6px' }}>
+            <div style={{ fontSize: '0.85rem', color: '#ffd700', marginTop: '10px', padding: '10px', background: '#4d3800', borderRadius: '6px' }}>
               {data.connections.error}
             </div>
           )}
@@ -116,13 +116,13 @@ const NetworkMetrics = ({ data, history }) => {
       )}
 
       {data.interfaces && Object.keys(data.interfaces).length > 0 && (
-        <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '2px solid #f0f0f0' }}>
-          <h3 style={{ fontSize: '1.1rem', marginBottom: '10px', color: '#666' }}>Network Interfaces</h3>
+        <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '2px solid #2a2a3e' }}>
+          <h3 style={{ fontSize: '1.1rem', marginBottom: '10px', color: '#a0a0b0' }}>Network Interfaces</h3>
 
           {Object.entries(data.interfaces).map(([name, stats]) => (
-            <div key={name} style={{ marginBottom: '15px', paddingBottom: '15px', borderBottom: '1px solid #f0f0f0' }}>
+            <div key={name} style={{ marginBottom: '15px', paddingBottom: '15px', borderBottom: '1px solid #2a2a3e' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                <span style={{ fontWeight: 600, fontSize: '1rem', color: '#667eea' }}>{name}</span>
+                <span style={{ fontWeight: 600, fontSize: '1rem', color: '#8b9bff' }}>{name}</span>
                 {name === primaryInterface && (
                   <span className="status-indicator status-good" style={{ fontSize: '0.75rem' }}>Primary</span>
                 )}
@@ -133,7 +133,7 @@ const NetworkMetrics = ({ data, history }) => {
                 <span className="metric-row-value">
                   {formatBytes(stats.bytes_sent)}
                   {bandwidth && bandwidth[name] && (
-                    <span style={{ fontSize: '0.8rem', color: '#666', marginLeft: '8px' }}>
+                    <span style={{ fontSize: '0.8rem', color: '#a0a0b0', marginLeft: '8px' }}>
                       ({formatBytes(bandwidth[name].sent)}/s)
                     </span>
                   )}
@@ -145,7 +145,7 @@ const NetworkMetrics = ({ data, history }) => {
                 <span className="metric-row-value">
                   {formatBytes(stats.bytes_recv)}
                   {bandwidth && bandwidth[name] && (
-                    <span style={{ fontSize: '0.8rem', color: '#666', marginLeft: '8px' }}>
+                    <span style={{ fontSize: '0.8rem', color: '#a0a0b0', marginLeft: '8px' }}>
                       ({formatBytes(bandwidth[name].recv)}/s)
                     </span>
                   )}
@@ -174,23 +174,34 @@ const NetworkMetrics = ({ data, history }) => {
 
       {chartData.length > 1 && primaryInterface && (
         <div className="chart-container">
-          <div className="metric-row-label" style={{ marginBottom: '10px' }}>
+          <div className="metric-row-label" style={{ marginBottom: '10px', color: '#a0a0b0' }}>
             Bandwidth History ({primaryInterface})
           </div>
-          <ResponsiveContainer width="100%" height={150}>
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <ResponsiveContainer width="100%" height={180}>
+            <LineChart data={chartData} margin={{ left: 10, right: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3e" />
               <XAxis dataKey="name" hide />
-              <YAxis tickFormatter={(value) => formatBytes(value)} />
+              <YAxis
+                tickFormatter={(value) => formatBytes(value)}
+                width={70}
+                tick={{ fill: '#a0a0b0', fontSize: 12 }}
+                tickCount={5}
+              />
               <Tooltip
                 formatter={(value) => formatBytes(value)}
                 labelFormatter={() => 'Network Traffic'}
+                contentStyle={{
+                  backgroundColor: '#1e1e2f',
+                  border: '1px solid #2a2a3e',
+                  borderRadius: '8px',
+                  color: '#e0e0e0'
+                }}
               />
-              <Legend />
+              <Legend wrapperStyle={{ color: '#a0a0b0' }} />
               <Line
                 type="monotone"
                 dataKey={`${primaryInterface}_sent`}
-                stroke="#667eea"
+                stroke="#8b9bff"
                 strokeWidth={2}
                 dot={false}
                 name="Sent"
@@ -198,7 +209,7 @@ const NetworkMetrics = ({ data, history }) => {
               <Line
                 type="monotone"
                 dataKey={`${primaryInterface}_recv`}
-                stroke="#764ba2"
+                stroke="#ff6b9d"
                 strokeWidth={2}
                 dot={false}
                 name="Received"

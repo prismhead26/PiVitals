@@ -27,7 +27,7 @@ const Dashboard = () => {
       <div className="error">
         <h2>Connection Error</h2>
         <p>{error}</p>
-        <button onClick={refresh} style={{ marginTop: '10px', padding: '10px 20px', cursor: 'pointer' }}>
+        <button onClick={refresh} style={{ marginTop: '10px', padding: '10px 20px', cursor: 'pointer', background: '#667eea', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 600 }}>
           Retry
         </button>
       </div>
@@ -49,12 +49,13 @@ const Dashboard = () => {
             style={{
               padding: '8px 16px',
               borderRadius: '20px',
-              border: 'none',
-              background: 'white',
+              border: '1px solid #2a2a3e',
+              background: '#1e1e2f',
+              color: '#e0e0e0',
               cursor: 'pointer',
               fontWeight: 600,
               fontSize: '0.85rem',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
             }}
           >
             {isPaused ? '▶ Resume' : '⏸ Pause'}
@@ -64,12 +65,13 @@ const Dashboard = () => {
             style={{
               padding: '8px 16px',
               borderRadius: '20px',
-              border: 'none',
-              background: 'white',
+              border: '1px solid #2a2a3e',
+              background: '#1e1e2f',
+              color: '#e0e0e0',
               cursor: 'pointer',
               fontWeight: 600,
               fontSize: '0.85rem',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
             }}
           >
             🔄 Refresh

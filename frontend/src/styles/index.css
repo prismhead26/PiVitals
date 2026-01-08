@@ -10,9 +10,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   min-height: 100vh;
-  color: #333;
+  color: #e0e0e0;
 }
 
 code {
@@ -57,16 +57,18 @@ code {
 
 /* Metric Card Styles */
 .metric-card {
-  background: white;
+  background: #1e1e2f;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #2a2a3e;
 }
 
 .metric-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  border-color: #667eea;
 }
 
 .metric-card-header {
@@ -75,24 +77,24 @@ code {
   align-items: center;
   margin-bottom: 15px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid #2a2a3e;
 }
 
 .metric-card-header h2 {
   font-size: 1.5rem;
-  color: #667eea;
+  color: #8b9bff;
   font-weight: 600;
 }
 
 .metric-value {
   font-size: 2rem;
   font-weight: 700;
-  color: #333;
+  color: #e0e0e0;
 }
 
 .metric-label {
   font-size: 0.9rem;
-  color: #666;
+  color: #a0a0b0;
   margin-top: 5px;
 }
 
@@ -101,7 +103,7 @@ code {
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #2a2a3e;
 }
 
 .metric-row:last-child {
@@ -110,13 +112,13 @@ code {
 
 .metric-row-label {
   font-size: 0.95rem;
-  color: #666;
+  color: #a0a0b0;
 }
 
 .metric-row-value {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #333;
+  color: #e0e0e0;
 }
 
 /* Status Indicators */
@@ -129,25 +131,25 @@ code {
 }
 
 .status-good {
-  background: #d4edda;
-  color: #155724;
+  background: #1e4d2b;
+  color: #7cfc00;
 }
 
 .status-warning {
-  background: #fff3cd;
-  color: #856404;
+  background: #4d3800;
+  color: #ffd700;
 }
 
 .status-danger {
-  background: #f8d7da;
-  color: #721c24;
+  background: #4d1f1f;
+  color: #ff6b6b;
 }
 
 /* Progress Bar */
 .progress-bar {
   width: 100%;
   height: 20px;
-  background: #f0f0f0;
+  background: #2a2a3e;
   border-radius: 10px;
   overflow: hidden;
   margin: 10px 0;
@@ -169,17 +171,18 @@ code {
 .loading {
   text-align: center;
   padding: 50px;
-  color: white;
+  color: #e0e0e0;
   font-size: 1.2rem;
 }
 
 .error {
-  background: #f8d7da;
-  color: #721c24;
+  background: #4d1f1f;
+  color: #ff6b6b;
   padding: 20px;
   border-radius: 8px;
   margin: 20px;
   text-align: center;
+  border: 1px solid #721c24;
 }
 
 .error h2 {
@@ -189,7 +192,7 @@ code {
 /* Footer */
 .dashboard-footer {
   text-align: center;
-  color: white;
+  color: #e0e0e0;
   padding: 20px;
   font-size: 0.9rem;
 }
@@ -202,8 +205,9 @@ code {
 .chart-container {
   margin-top: 15px;
   padding: 10px;
-  background: #f9f9f9;
+  background: #16162a;
   border-radius: 8px;
+  border: 1px solid #2a2a3e;
 }
 
 /* Temperature Gauge */
@@ -225,18 +229,18 @@ code {
 }
 
 .temp-cold {
-  background: #d4edda;
-  color: #155724;
+  background: #1e4d2b;
+  color: #7cfc00;
 }
 
 .temp-normal {
-  background: #fff3cd;
-  color: #856404;
+  background: #4d3800;
+  color: #ffd700;
 }
 
 .temp-hot {
-  background: #f8d7da;
-  color: #721c24;
+  background: #4d1f1f;
+  color: #ff6b6b;
 }
 
 /* Responsive */
@@ -263,8 +267,10 @@ code {
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
-  background: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #1e1e2f;
+  color: #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 1px solid #2a2a3e;
 }
 
 .connection-dot {

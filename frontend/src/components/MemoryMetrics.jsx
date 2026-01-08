@@ -19,8 +19,8 @@ const MemoryMetrics = ({ data, history }) => {
 
   // Prepare pie chart data
   const pieData = [
-    { name: 'Used', value: data.used, color: '#667eea' },
-    { name: 'Available', value: data.available, color: '#e0e7ff' },
+    { name: 'Used', value: data.used, color: '#8b9bff' },
+    { name: 'Available', value: data.available, color: '#2a2a3e' },
   ];
 
   return (
@@ -102,7 +102,7 @@ const MemoryMetrics = ({ data, history }) => {
 
       {pieData && (
         <div className="chart-container">
-          <div className="metric-row-label" style={{ marginBottom: '10px' }}>Memory Distribution</div>
+          <div className="metric-row-label" style={{ marginBottom: '10px', color: '#a0a0b0' }}>Memory Distribution</div>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
@@ -119,7 +119,15 @@ const MemoryMetrics = ({ data, history }) => {
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip formatter={(value) => formatBytes(value)} />
+              <Tooltip
+                formatter={(value) => formatBytes(value)}
+                contentStyle={{
+                  backgroundColor: '#1e1e2f',
+                  border: '1px solid #2a2a3e',
+                  borderRadius: '8px',
+                  color: '#e0e0e0'
+                }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
