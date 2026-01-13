@@ -20,6 +20,8 @@ FAILED_PATTERNS = [
     re.compile(r'Invalid user (?P<user>\\S+) from (?P<ip>\\S+)')
 ]
 
+ACCEPTED_PATTERN = re.compile(r'Accepted \\S+ for (?P<user>\\S+) from (?P<ip>\\S+)')
+SESSION_PATTERN = re.compile(r'session opened for user (?P<user>\\S+)')
 
 def _find_command(name, fallbacks):
     cmd = shutil.which(name)
@@ -137,6 +139,31 @@ def _parse_sudo_events(lines, limit=10):
             'command': command_match.group(1).strip() if command_match else None,
             'message': line.strip()
         })
+    return entries[-limit:]
+
+
+def _parse_success_logins(lines, limit=10):
+    entries = []
+    for line in lines:
+        if 'Accepted ' in line:
+            match = ACCEPTED_PATTERN.search(line)
+            if match:
+                entries.append({
+                    'timestamp': _parse_syslog_timestamp(line),
+                    'user': match.group('user'),
+                    'ip': match.group('ip'),
+                    'message': line.strip()
+                })
+                continue
+        if 'session opened for user' in line:
+            match = SESSION_PATTERN.search(line)
+            if match:
+                entries.append({
+                    'timestamp': _parse_syslog_timestamp(line),
+                    'user': match.group('user'),
+                    'ip': None,
+                    'message': line.strip()
+                })
     return entries[-limit:]
 
 
@@ -305,6 +332,7 @@ def get_security_metrics(login_limit=10, failed_limit=10, sudo_limit=10):
             auth_error = f'Auth log file not found and journal unavailable: {auth_error}'
     failed_logins, top_ips = _parse_failed_logins(auth_lines, limit=failed_limit)
     sudo_events = _parse_sudo_events(auth_lines, limit=sudo_limit)
+    auth_recent_logins = _parse_success_logins(auth_lines, limit=login_limit)
 
     current_sessions = get_current_sessions()
     recent_logins = get_recent_logins(limit=login_limit)
@@ -314,12 +342,16 @@ def get_security_metrics(login_limit=10, failed_limit=10, sudo_limit=10):
         errors.append(auth_error)
     if current_sessions.get('error'):
         errors.append(current_sessions['error'])
-    if recent_logins.get('error'):
+
+    recent_entries = recent_logins.get('entries', [])
+    if not recent_entries and auth_recent_logins:
+        recent_entries = auth_recent_logins
+    if recent_logins.get('error') and not recent_entries:
         errors.append(recent_logins['error'])
 
     return {
         'current_sessions': current_sessions.get('sessions', []),
-        'recent_logins': recent_logins.get('entries', []),
+        'recent_logins': recent_entries,
         'failed_logins': failed_logins,
         'failed_login_summary': {
             'total': len(failed_logins),
