@@ -86,4 +86,27 @@ export const metricsAPI = {
   getHealth: () => api.get('/api/v1/health'),
 };
 
+// System API methods
+export const systemAPI = {
+  /**
+   * Get overview for processes, services, and security
+   */
+  getOverview: () => api.get('/api/v1/system/overview'),
+
+  /**
+   * Get process metrics
+   */
+  getProcesses: () => api.get('/api/v1/system/processes'),
+
+  /**
+   * Get service metrics
+   */
+  getServices: () => api.get('/api/v1/system/services'),
+
+  /**
+   * Get security metrics
+   */
+  getSecurity: () => api.get('/api/v1/system/security'),
+};
+
 export default api;

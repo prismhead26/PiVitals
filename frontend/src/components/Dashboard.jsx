@@ -1,12 +1,17 @@
 import React from 'react';
 import { useMetrics } from '../hooks/useMetrics';
+import { useSystemInfo } from '../hooks/useSystemInfo';
 import CPUMetrics from './CPUMetrics';
 import MemoryMetrics from './MemoryMetrics';
 import DiskMetrics from './DiskMetrics';
 import NetworkMetrics from './NetworkMetrics';
+import ProcessMetrics from './ProcessMetrics';
+import ServiceMetrics from './ServiceMetrics';
+import SecurityMetrics from './SecurityMetrics';
 
 const Dashboard = () => {
   const { metrics, history, loading, error, connected, lastUpdated, isPaused, togglePause, refresh } = useMetrics();
+  const { data: systemInfo, error: systemError, refresh: refreshSystem } = useSystemInfo();
 
   const formatLastUpdated = () => {
     if (!lastUpdated) return 'Never';
@@ -76,6 +81,24 @@ const Dashboard = () => {
           >
             🔄 Refresh
           </button>
+          {systemError && (
+            <button
+              onClick={refreshSystem}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: '1px solid #4d3800',
+                background: '#2a2410',
+                color: '#ffd700',
+                cursor: 'pointer',
+                fontWeight: 600,
+                fontSize: '0.85rem',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
+              }}
+            >
+              System Retry
+            </button>
+          )}
         </div>
       </div>
 
@@ -85,6 +108,9 @@ const Dashboard = () => {
           <MemoryMetrics data={metrics.memory} history={history} />
           <DiskMetrics data={metrics.disk} history={history} />
           <NetworkMetrics data={metrics.network} history={history} />
+          <ProcessMetrics data={systemInfo?.processes} />
+          <ServiceMetrics data={systemInfo?.services} />
+          <SecurityMetrics data={systemInfo?.security} />
         </div>
       )}
 

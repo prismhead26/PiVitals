@@ -5,7 +5,7 @@ Main Flask application entry point
 from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from config import get_config
-from routes import metrics_bp
+from routes import metrics_bp, system_bp
 import time
 import psutil
 import os
@@ -32,6 +32,7 @@ def create_app():
 
     # Register blueprints
     app.register_blueprint(metrics_bp)
+    app.register_blueprint(system_bp)
 
     # Store app start time
     app.config['START_TIME'] = time.time()

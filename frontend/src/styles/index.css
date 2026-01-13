@@ -210,6 +210,120 @@ code {
   border: 1px solid #2a2a3e;
 }
 
+/* List Sections */
+.list-section {
+  margin-top: 10px;
+}
+
+.list-title {
+  font-size: 0.95rem;
+  color: #a0a0b0;
+  margin-bottom: 8px;
+}
+
+.list-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #2a2a3e;
+  gap: 12px;
+}
+
+.list-row:last-child {
+  border-bottom: none;
+}
+
+.list-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.list-item-main {
+  font-size: 0.95rem;
+  color: #e0e0e0;
+  font-weight: 600;
+}
+
+.list-item-sub {
+  font-size: 0.8rem;
+  color: #a0a0b0;
+}
+
+.list-metric {
+  font-size: 0.85rem;
+  color: #a0a0b0;
+  min-width: 70px;
+  text-align: right;
+}
+
+.list-empty {
+  font-size: 0.85rem;
+  color: #a0a0b0;
+  padding: 6px 0;
+}
+
+.list-muted {
+  color: #a0a0b0;
+  font-weight: 400;
+}
+
+.chip-row {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.inline-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #2a2a3e;
+  color: #a0a0b0;
+  font-size: 0.75rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-active {
+  background: #1e4d2b;
+  color: #7cfc00;
+}
+
+.status-failed {
+  background: #4d1f1f;
+  color: #ff6b6b;
+}
+
+.status-warning {
+  background: #4d3800;
+  color: #ffd700;
+}
+
+.status-inactive {
+  background: #2a2a3e;
+  color: #a0a0b0;
+}
+
+.inline-alert {
+  margin: 10px 0;
+  padding: 8px 10px;
+  background: #4d3800;
+  color: #ffd700;
+  border-radius: 6px;
+  border: 1px solid #6d5200;
+  font-size: 0.85rem;
+}
+
 /* Temperature Gauge */
 .temperature-gauge {
   display: flex;

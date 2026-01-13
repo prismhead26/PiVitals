@@ -26,6 +26,16 @@ class Config:
     # Logging
     LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 
+    # System monitoring settings
+    SYSTEM_CACHE_SECONDS = int(os.getenv('SYSTEM_CACHE_SECONDS', 5))
+    SYSTEM_PROCESS_LIMIT = int(os.getenv('SYSTEM_PROCESS_LIMIT', 10))
+    SYSTEM_SERVICE_LIMIT = int(os.getenv('SYSTEM_SERVICE_LIMIT', 15))
+    SYSTEM_SECURITY_LIMIT = int(os.getenv('SYSTEM_SECURITY_LIMIT', 10))
+    WATCHED_SERVICES = [
+        name.strip() for name in os.getenv('WATCHED_SERVICES', 'pivitals,ssh').split(',')
+        if name.strip()
+    ]
+
 
 class DevelopmentConfig(Config):
     """Development configuration"""
