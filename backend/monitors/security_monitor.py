@@ -269,8 +269,9 @@ def get_recent_logins(limit=10):
     last_cmd = _find_command('last', ['/bin/last', '/usr/bin/last'])
     if not last_cmd:
         return {
-            'error': 'last command not found',
-            'entries': []
+            'error': None,
+            'entries': [],
+            'available': False
         }
     try:
         raw_only = False
@@ -307,17 +308,20 @@ def get_recent_logins(limit=10):
                 entries.append(parsed)
 
         return {
-            'entries': entries[:limit]
+            'entries': entries[:limit],
+            'available': True
         }
     except subprocess.TimeoutExpired:
         return {
             'error': 'last command timed out',
-            'entries': []
+            'entries': [],
+            'available': True
         }
     except Exception as e:
         return {
             'error': str(e),
-            'entries': []
+            'entries': [],
+            'available': True
         }
 
 
