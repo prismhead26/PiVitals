@@ -4,6 +4,7 @@ Collects systemd service status information
 """
 import subprocess
 import shutil
+import os
 
 
 def _parse_systemctl_output(output):
@@ -42,6 +43,11 @@ def get_service_metrics(limit=15, watched=None):
     Returns a dictionary with summary, failed services, and watched services.
     """
     systemctl_path = shutil.which('systemctl')
+    if not systemctl_path:
+        for candidate in ['/bin/systemctl', '/usr/bin/systemctl']:
+            if os.path.exists(candidate):
+                systemctl_path = candidate
+                break
     if not systemctl_path:
         return {
             'error': 'systemctl not found - service monitoring unavailable',

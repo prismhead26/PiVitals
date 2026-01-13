@@ -21,6 +21,16 @@ FAILED_PATTERNS = [
 ]
 
 
+def _find_command(name, fallbacks):
+    cmd = shutil.which(name)
+    if cmd:
+        return cmd
+    for path in fallbacks:
+        if os.path.exists(path):
+            return path
+    return None
+
+
 def _read_log_tail(paths, max_lines=2000):
     for path in paths:
         if not os.path.exists(path):
@@ -36,7 +46,7 @@ def _read_log_tail(paths, max_lines=2000):
 
 
 def _read_journal_tail(max_lines=2000):
-    journalctl = shutil.which('journalctl')
+    journalctl = _find_command('journalctl', ['/bin/journalctl', '/usr/bin/journalctl'])
     if not journalctl:
         return [], 'journalctl not found', None
     try:
@@ -180,7 +190,7 @@ def _parse_last_line(line):
 
 
 def get_current_sessions():
-    who_cmd = shutil.which('who')
+    who_cmd = _find_command('who', ['/bin/who', '/usr/bin/who'])
     if not who_cmd:
         return {
             'error': 'who command not found',
@@ -229,7 +239,7 @@ def get_current_sessions():
 
 
 def get_recent_logins(limit=10):
-    last_cmd = shutil.which('last')
+    last_cmd = _find_command('last', ['/bin/last', '/usr/bin/last'])
     if not last_cmd:
         return {
             'error': 'last command not found',
