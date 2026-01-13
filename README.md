@@ -13,6 +13,9 @@ A real-time health monitoring application for Raspberry Pi 4 that displays CPU, 
 - **Memory Metrics**: RAM and swap usage with visual representations
 - **Disk Metrics**: Partition usage and I/O statistics
 - **Network Metrics**: Interface statistics, bandwidth, and active connections
+- **Process Monitor**: Top CPU and memory processes with counts by state
+- **Service Monitor**: systemd service health, failures, and watched services
+- **Security Overview**: Current sessions, recent logins, failed logins, and sudo activity
 - **Beautiful UI**: Modern responsive dashboard with interactive charts
 - **Lightweight**: Optimized for Raspberry Pi with minimal resource usage
 - **Auto-restart**: Systemd service with automatic recovery
@@ -171,6 +174,13 @@ CORS_ORIGINS=http://192.168.5.162:5173,http://localhost:5173
 # Application Settings
 METRICS_CACHE_SECONDS=1          # Cache duration for metrics
 LOG_LEVEL=INFO                   # Logging level
+
+# System Monitoring Settings
+SYSTEM_CACHE_SECONDS=5           # Cache duration for system info
+SYSTEM_PROCESS_LIMIT=10          # Top process count for CPU/memory lists
+SYSTEM_SERVICE_LIMIT=15          # Max services returned for lists
+SYSTEM_SECURITY_LIMIT=10         # Max login/failed/sudo rows
+WATCHED_SERVICES=pivitals,ssh    # Comma-separated systemd services
 ```
 
 ### Systemd Service
@@ -200,11 +210,21 @@ The backend provides REST API endpoints:
 - `GET /api/v1/metrics/disk` - Disk metrics
 - `GET /api/v1/metrics/network` - Network metrics
 - `GET /api/v1/metrics/all` - All metrics (recommended)
+- `GET /api/v1/system/processes` - Top processes and process summary
+- `GET /api/v1/system/services` - systemd service summary and failures
+- `GET /api/v1/system/security` - Logins, sessions, and auth events
+- `GET /api/v1/system/overview` - All system info (recommended)
 
 Example:
 
 ```bash
 curl http://localhost:5001/api/v1/metrics/all
+```
+
+System example:
+
+```bash
+curl http://localhost:5001/api/v1/system/overview
 ```
 
 ## Monitoring & Logs
@@ -278,6 +298,17 @@ curl http://localhost:5001/api/v1/health
 # Check CORS settings in .env
 # Make sure frontend origin is in CORS_ORIGINS
 ```
+
+### Security panel shows permission errors
+
+The security view reads `/var/log/auth.log` or `/var/log/secure` and runs `who`/`last`.
+On Raspberry Pi OS, the service user may need access to auth logs:
+
+```bash
+sudo usermod -a -G adm $USER
+```
+
+Then restart the service (or log out and back in for the group to apply).
 
 ### CPU temperature not showing
 
@@ -372,6 +403,13 @@ Resource usage on Raspberry Pi 4:
 - **CPU**: <5% idle, ~10-15% when serving requests
 - **Disk**: ~20 MB + logs
 - **Network**: Minimal (only API polling)
+
+## Raspberry Pi Notes
+
+- **systemd required**: Service monitoring uses `systemctl`.
+- **Auth logs**: Security view needs read access to `/var/log/auth.log` or `/var/log/secure`.
+- **Watched services**: Configure via `WATCHED_SERVICES` to highlight critical units.
+- **Low power**: Keep `SYSTEM_CACHE_SECONDS` higher if you want less polling overhead.
 
 ## Security
 
