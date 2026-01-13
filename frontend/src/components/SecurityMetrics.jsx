@@ -9,6 +9,21 @@ const SecurityMetrics = ({ data }) => {
   const sudo = data.sudo_events || [];
   const topIps = data.failed_login_summary?.top_ips || [];
 
+  const getSessionType = (session) => {
+    const tty = (session.tty || '').toLowerCase();
+    const host = session.host || '';
+
+    if (tty.startsWith('pts/') || host) {
+      return host ? `SSH from ${host}` : 'Remote session';
+    }
+
+    if (tty.startsWith('tty') || tty.startsWith('seat') || tty === 'console') {
+      return 'Local console';
+    }
+
+    return 'Session';
+  };
+
   return (
     <div className="metric-card">
       <div className="metric-card-header">
@@ -31,7 +46,7 @@ const SecurityMetrics = ({ data }) => {
           <div key={`session-${index}`} className="list-row">
             <div className="list-main">
               <div className="list-item-main">{session.user} @ {session.tty}</div>
-              <div className="list-item-sub">{session.login_time} {session.host ? `- ${session.host}` : ''}</div>
+              <div className="list-item-sub">{session.login_time} - {getSessionType(session)}</div>
             </div>
             <div className="list-metric">active</div>
           </div>
