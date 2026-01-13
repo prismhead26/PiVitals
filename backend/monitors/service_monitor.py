@@ -41,7 +41,8 @@ def get_service_metrics(limit=15, watched=None):
     Get systemd service metrics.
     Returns a dictionary with summary, failed services, and watched services.
     """
-    if not shutil.which('systemctl'):
+    systemctl_path = shutil.which('systemctl')
+    if not systemctl_path:
         return {
             'error': 'systemctl not found - service monitoring unavailable',
             'summary': {},
@@ -51,7 +52,7 @@ def get_service_metrics(limit=15, watched=None):
 
     try:
         result = subprocess.run(
-            ['systemctl', 'list-units', '--type=service', '--all', '--no-pager', '--no-legend'],
+            [systemctl_path, 'list-units', '--type=service', '--all', '--no-pager', '--no-legend'],
             capture_output=True,
             text=True,
             timeout=3

@@ -5,6 +5,7 @@ Collects login activity and authentication events
 import os
 import re
 import subprocess
+import shutil
 from collections import deque, Counter
 
 
@@ -31,11 +32,55 @@ def _read_log_tail(paths, max_lines=2000):
             return [], f'Permission denied reading {path}', path
         except Exception as e:
             return [], str(e), path
-    return [], 'Auth log file not found', None
+    return None, None, None
+
+
+def _read_journal_tail(max_lines=2000):
+    journalctl = shutil.which('journalctl')
+    if not journalctl:
+        return [], 'journalctl not found', None
+    try:
+        result = subprocess.run(
+            [
+                journalctl,
+                '-n',
+                str(max_lines),
+                '--no-pager',
+                '--output',
+                'short',
+                '-t',
+                'sshd',
+                '-t',
+                'sudo'
+            ],
+            capture_output=True,
+            text=True,
+            timeout=3
+        )
+        if result.returncode != 0 or not result.stdout.strip():
+            result = subprocess.run(
+                [journalctl, '-n', str(max_lines), '--no-pager', '--output', 'short'],
+                capture_output=True,
+                text=True,
+                timeout=3
+            )
+
+        if result.returncode != 0:
+            return [], result.stderr.strip() or 'Failed to read journal', 'journalctl'
+
+        return result.stdout.splitlines(), None, 'journalctl'
+    except subprocess.TimeoutExpired:
+        return [], 'journalctl timed out', 'journalctl'
+    except Exception as e:
+        return [], str(e), 'journalctl'
 
 
 def _parse_syslog_timestamp(line):
     parts = line.split()
+    if not parts:
+        return None
+    if parts[0][:4].isdigit() and 'T' in parts[0]:
+        return parts[0]
     if len(parts) < 3:
         return None
     return f"{parts[0]} {parts[1]} {parts[2]}"
@@ -135,9 +180,15 @@ def _parse_last_line(line):
 
 
 def get_current_sessions():
+    who_cmd = shutil.which('who')
+    if not who_cmd:
+        return {
+            'error': 'who command not found',
+            'sessions': []
+        }
     try:
         result = subprocess.run(
-            ['who'],
+            [who_cmd],
             capture_output=True,
             text=True,
             timeout=2
@@ -178,10 +229,16 @@ def get_current_sessions():
 
 
 def get_recent_logins(limit=10):
+    last_cmd = shutil.which('last')
+    if not last_cmd:
+        return {
+            'error': 'last command not found',
+            'entries': []
+        }
     try:
         raw_only = False
         result = subprocess.run(
-            ['last', '-n', str(limit), '--time-format', 'iso'],
+            [last_cmd, '-n', str(limit), '--time-format', 'iso'],
             capture_output=True,
             text=True,
             timeout=3
@@ -190,7 +247,7 @@ def get_recent_logins(limit=10):
             if 'time-format' in result.stderr:
                 raw_only = True
                 result = subprocess.run(
-                    ['last', '-n', str(limit)],
+                    [last_cmd, '-n', str(limit)],
                     capture_output=True,
                     text=True,
                     timeout=3
@@ -232,6 +289,10 @@ def get_security_metrics(login_limit=10, failed_limit=10, sudo_limit=10):
     Aggregate security-related metrics: sessions, logins, failed attempts, sudo.
     """
     auth_lines, auth_error, auth_path = _read_log_tail(AUTH_LOG_PATHS, max_lines=5000)
+    if auth_lines is None:
+        auth_lines, auth_error, auth_path = _read_journal_tail(max_lines=5000)
+        if auth_error:
+            auth_error = f'Auth log file not found and journal unavailable: {auth_error}'
     failed_logins, top_ips = _parse_failed_logins(auth_lines, limit=failed_limit)
     sudo_events = _parse_sudo_events(auth_lines, limit=sudo_limit)
 

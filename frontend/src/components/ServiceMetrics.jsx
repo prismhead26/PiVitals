@@ -7,6 +7,7 @@ const ServiceMetrics = ({ data }) => {
   const failed = data.failed || [];
   const watched = data.watched || [];
   const runningSample = data.running_sample || [];
+  const error = data.error;
 
   const getStatusClass = (state) => {
     if (state === 'active') return 'status-active';
@@ -35,6 +36,12 @@ const ServiceMetrics = ({ data }) => {
           {summary.failed || 0} Failed
         </span>
       </div>
+
+      {error && (
+        <div className="inline-alert">
+          {error}
+        </div>
+      )}
 
       <div className="metric-row">
         <span className="metric-row-label">Active</span>
