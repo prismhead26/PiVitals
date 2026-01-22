@@ -32,7 +32,7 @@ const Dashboard = () => {
       <div className="error">
         <h2>Connection Error</h2>
         <p>{error}</p>
-        <button onClick={refresh} style={{ marginTop: '10px', padding: '10px 20px', cursor: 'pointer', background: '#667eea', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 600 }}>
+        <button className="pill-button primary" onClick={refresh}>
           Retry
         </button>
       </div>
@@ -41,64 +41,30 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <div className="dashboard-header">
-        <h1>PiVitals</h1>
-        <p>Raspberry Pi Health Monitor</p>
-        <div style={{ marginTop: '15px', display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
-          <div className="connection-status">
-            <div className={`connection-dot ${connected ? 'connected' : 'disconnected'}`}></div>
+      <div className="dashboard-hero">
+        <div className="hero-text">
+          <p className="eyebrow">Raspberry Pi 4 • Live health & security</p>
+          <h1>PiVitals</h1>
+          <p className="lede">Transparent, real-time observability for your Pi—CPU, services, security, and more.</p>
+        </div>
+        <div className="hero-actions">
+          <div className={`connection-status ${connected ? 'connected' : 'disconnected'}`}>
+            <div className="connection-dot"></div>
             <span>{connected ? 'Connected' : 'Disconnected'}</span>
           </div>
-          <button
-            onClick={togglePause}
-            style={{
-              padding: '8px 16px',
-              borderRadius: '20px',
-              border: '1px solid #2a2a3e',
-              background: '#1e1e2f',
-              color: '#e0e0e0',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '0.85rem',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
-            }}
-          >
-            {isPaused ? '▶ Resume' : '⏸ Pause'}
-          </button>
-          <button
-            onClick={refresh}
-            style={{
-              padding: '8px 16px',
-              borderRadius: '20px',
-              border: '1px solid #2a2a3e',
-              background: '#1e1e2f',
-              color: '#e0e0e0',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '0.85rem',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
-            }}
-          >
-            🔄 Refresh
-          </button>
-          {systemError && (
-            <button
-              onClick={refreshSystem}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '20px',
-                border: '1px solid #4d3800',
-                background: '#2a2410',
-                color: '#ffd700',
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
-              }}
-            >
-              System Retry
+          <div className="action-group">
+            <button className="pill-button ghost" onClick={togglePause}>
+              {isPaused ? '▶ Resume' : '⏸ Pause'}
             </button>
-          )}
+            <button className="pill-button primary" onClick={refresh}>
+              🔄 Refresh
+            </button>
+            {systemError && (
+              <button className="pill-button warning" onClick={refreshSystem}>
+                System Retry
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

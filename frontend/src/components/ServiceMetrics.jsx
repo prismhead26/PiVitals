@@ -7,6 +7,9 @@ const ServiceMetrics = ({ data }) => {
   const failed = data.failed || [];
   const watched = data.watched || [];
   const runningSample = data.running_sample || [];
+  const activeServices = runningSample.filter(
+    (service) => !watched.find((watchedService) => watchedService.name === service.name)
+  );
   const error = data.error;
 
   const getStatusClass = (state) => {
@@ -53,25 +56,27 @@ const ServiceMetrics = ({ data }) => {
         <span className="metric-row-value">{summary.inactive || 0}</span>
       </div>
 
-      <div className="list-section">
-        <div className="list-title">Failed Services</div>
-        {failed.length === 0 && <div className="list-empty">No failed services</div>}
-        {failed.map(renderServiceRow)}
-      </div>
+      <div className="list-section grid-list">
+        <div>
+          <div className="list-title">Failed Services</div>
+          {failed.length === 0 && <div className="list-empty">No failed services</div>}
+          {failed.map(renderServiceRow)}
+        </div>
 
-      {watched.length > 0 && (
-        <div className="list-section" style={{ marginTop: '15px' }}>
+        <div>
           <div className="list-title">Watched Services</div>
+          {watched.length === 0 && <div className="list-empty">No watched services</div>}
           {watched.map(renderServiceRow)}
         </div>
-      )}
+      </div>
 
-      {watched.length === 0 && runningSample.length > 0 && (
-        <div className="list-section" style={{ marginTop: '15px' }}>
-          <div className="list-title">Running Sample</div>
-          {runningSample.map(renderServiceRow)}
-        </div>
-      )}
+      <div className="list-section" style={{ marginTop: '15px' }}>
+        <div className="list-title">Active Services</div>
+        {activeServices.length === 0 && watched.length === 0 && (
+          <div className="list-empty">No active services found</div>
+        )}
+        {activeServices.map(renderServiceRow)}
+      </div>
     </div>
   );
 };
